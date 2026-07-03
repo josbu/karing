@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:country/country.dart' as country;
 import 'package:flutter/widgets.dart';
@@ -1524,10 +1525,10 @@ class SettingConfig {
   ];
   static const Map<String, String> kUserAgentListOldUpgrade = {
     "sing-box": "sing-box $kCoreVersion",
-    "mihomo/1.19.9": "mihomo/1.19.23",
-    "mihomo/1.19.12": "mihomo/1.19.23",
-    "mihomo/1.19.16": "mihomo/1.19.23",
-    "mihomo/1.19.23": "mihomo/1.19.23",
+    "mihomo/1.19.9": "mihomo/1.19.27",
+    "mihomo/1.19.12": "mihomo/1.19.27",
+    "mihomo/1.19.16": "mihomo/1.19.27",
+    "mihomo/1.19.23": "mihomo/1.19.27",
     "NekoBox/Android/1.3.1 (Prefer ClashMeta Format)":
         "NekoBox/Android/1.4.1 (Prefer ClashMeta Format)",
     "NekoBox/Android/1.3.4 (Prefer ClashMeta Format)":
@@ -1775,7 +1776,7 @@ class SettingConfig {
 
     autoUpdateChannel = map["auto_update_channel"] ?? "stable";
     if (autoUpdateChannel.isEmpty) {
-      autoUpdateChannel = "stable";
+      autoUpdateChannel = Random().nextInt(10) < 5 ? "beta" : "stable";
     }
     updateWhenConnected = map["update_when_connected"] ?? false;
     autoDownloadUpdatePkg = map["auto_download_udpate_pkg"] ?? true;

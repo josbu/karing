@@ -1566,8 +1566,19 @@ class MyProfilesScreenState extends LasyRenderingState<MyProfilesScreen> {
     dynamic selectOutbound = SingboxConfigBuilder.buildOutbound(
       ServerManager.getUrltest(),
     );
+    final diversionGroupsResult = ServerManager.getDiversionGroups();
+    if (diversionGroupsResult.error != null) {
+      DialogUtils.showAlertDialog(
+        context,
+        diversionGroupsResult.error!.message,
+        showCopy: true,
+        showFAQ: true,
+        withVersion: true,
+      );
+      return;
+    }
     List<Tuple3<DiversionRulesGroup, ProxyConfig, List<String>>>
-    diversionGroups = ServerManager.getDiversionGroups();
+    diversionGroups = diversionGroupsResult.data!;
     Set<String> selectOutboundTags = {};
     List<dynamic> allOutBounds = [];
     for (var server in item.servers) {

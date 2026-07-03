@@ -3077,7 +3077,7 @@ class GroupHelper {
         proxyPort,
         null,
       );
-      FileUtils.deletePath(zipPath);
+      await FileUtils.deletePath(zipPath);
       if (!context.mounted) {
         return;
       }
@@ -3409,7 +3409,7 @@ class GroupHelper {
           filePath,
         );
         if (!context.mounted) {
-          FileUtils.deletePath(filePath);
+          await FileUtils.deletePath(filePath);
           return;
         }
         if (error != null) {

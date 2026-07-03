@@ -1497,16 +1497,7 @@ class _HomeScreenState extends LasyRenderingState<HomeScreen>
                 p: options.allOutboundsTags.length,
                 p1: maxCount,
               );
-
-        InAppNotifications.show(
-          title: tcontext.meta.tips,
-          duration: const Duration(seconds: 3),
-          leading: const Icon(Icons.warning, color: Colors.yellow, size: 50),
-          description: description,
-          onTap: () {
-            InAppNotifications.dismiss();
-          },
-        );
+        _showNotifyWarningContent(description, ignorePaused: true);
       }
     }
 
@@ -1573,7 +1564,7 @@ class _HomeScreenState extends LasyRenderingState<HomeScreen>
       }
 
       if (reason.isNotEmpty) {
-        _showNotifyWith(reason);
+        _showNotifyContent(reason);
       }
     } else {
       await VPNService.stop();
@@ -2770,13 +2761,18 @@ class _HomeScreenState extends LasyRenderingState<HomeScreen>
       if (_invalidBackgroundImageUrl == backgroundImageUrl) {
         return null;
       }
+      final tcontext = Translations.of(context);
       return BoxDecoration(
         image: DecorationImage(
           fit: BoxFit.fitHeight,
           image: FastCachedImageProvider(backgroundImageUrl),
           onError: (Object error, StackTrace? stackTrace) {
             Log.w(
-              "background image load failed: $backgroundImageUrl error:${error.toString()}",
+              "fast_cached_network_image background image: $backgroundImageUrl error:${error.toString()}",
+            );
+            _showNotifyWarningContent(
+              "${tcontext.SettingsScreen.backgroundImage}: ${error.toString()}",
+              ignorePaused: true,
             );
             unawaited(
               FastCachedImageConfig.deleteCachedImage(
@@ -2900,8 +2896,8 @@ class _HomeScreenState extends LasyRenderingState<HomeScreen>
     );
   }
 
-  void _showNotifyWith(String content) {
-    if (AppLifecycleStateNofity.isPaused()) {
+  void _showNotifyContent(String content, {bool ignorePaused = false}) {
+    if (AppLifecycleStateNofity.isPaused() && !ignorePaused) {
       return;
     }
 
@@ -2909,6 +2905,23 @@ class _HomeScreenState extends LasyRenderingState<HomeScreen>
     InAppNotifications.show(
       title: tcontext.meta.tips,
       duration: const Duration(seconds: 3),
+      description: content,
+      onTap: () {
+        InAppNotifications.dismiss();
+      },
+    );
+  }
+
+  void _showNotifyWarningContent(String content, {bool ignorePaused = false}) {
+    if (AppLifecycleStateNofity.isPaused() && !ignorePaused) {
+      return;
+    }
+
+    final tcontext = Translations.of(context);
+    InAppNotifications.show(
+      title: tcontext.meta.tips,
+      duration: const Duration(seconds: 3),
+      leading: const Icon(Icons.warning, color: Colors.yellow, size: 50),
       description: content,
       onTap: () {
         InAppNotifications.dismiss();

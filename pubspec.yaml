@@ -2,7 +2,7 @@ name: karing
 description: karing
 
 publish_to: none 
-version: 1.2.21+2406
+version: 1.2.21+2407
 environment:
   sdk: ">=3.9.0 <4.0.0"
   flutter: ">=3.35.0"
@@ -86,6 +86,7 @@ dependencies:
   after_layout: 1.2.0
   flutter_install_referrer: 2.1.1
   windows_single_instance: 1.1.0
+  #flutter_single_instance: 1.7.0
   flutter_plugin_android_lifecycle: 2.0.33 #file_picker image_picker
   file_picker: 10.3.10
   image_picker: 1.2.2

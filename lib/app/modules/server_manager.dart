@@ -686,7 +686,7 @@ class ServerManager {
     return _use;
   }
 
-  static List<DiversionGroupSetting> diversionGroupSorted() {
+  static ReturnResult<List<DiversionGroupSetting>> diversionGroupSorted() {
     List<DiversionGroupSetting> newGroups = [];
     List<DiversionGroupSetting> geositeGroups = [];
     List<DiversionGroupSetting> geoipGroups = [];
@@ -705,7 +705,12 @@ class ServerManager {
           }
         }
         if (!notEmpty) {
-          continue;
+          return ReturnResult(
+            error: ReturnResultError(
+              "${group.diversionName}: ${t.meta.urlTestCustomGroup} [${group.serverName}] ${t.HomeScreen.invalidServer}",
+              report: false,
+            ),
+          );
         }
       }
       if (group.diversionGroupId == ServerManager.getFinalGroupId()) {
@@ -801,7 +806,7 @@ class ServerManager {
     groups.addAll(geositeGroups3);
     groups.addAll(geositeGroups4);
     groups.addAll(finalGroups);
-    return groups;
+    return ReturnResult(data: groups);
   }
 
   static int sortCompare(DiversionGroupSetting a, DiversionGroupSetting b) {
@@ -811,14 +816,20 @@ class ServerManager {
     return (a.serverIndex - b.serverIndex);
   }
 
-  static List<Tuple3<DiversionRulesGroup, ProxyConfig, List<String>>>
+  static ReturnResult<
+    List<Tuple3<DiversionRulesGroup, ProxyConfig, List<String>>>
+  >
   getDiversionGroups() {
     List<Tuple3<DiversionRulesGroup, ProxyConfig, List<String>>>
     diversionGroups = [];
     ServerConfigGroupItem? custom = getCustomGroup();
     //ServerDiversionGroupItem? customDiversion = getDiversionCustomGroup();
     Set<String> exists = {};
-    var diversionGroup = diversionGroupSorted();
+    var diversionGroupResult = diversionGroupSorted();
+    if (diversionGroupResult.error != null) {
+      return ReturnResult(error: diversionGroupResult.error);
+    }
+    var diversionGroup = diversionGroupResult.data!;
     for (var use in diversionGroup) {
       if (use.diversionGroupId != getFinalGroupId() &&
           use.diversionGroupId != getUrltestGroupId() &&
@@ -900,7 +911,7 @@ class ServerManager {
         diversionGroups.add(Tuple3(rg, pc, use.dnsServers));
       }
     }
-    return diversionGroups;
+    return ReturnResult(data: diversionGroups);
   }
 
   static Future<void> loadServerConfig() async {

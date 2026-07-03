@@ -393,7 +393,7 @@ class _BackupAndSyncWebdavScreenState
         filePath,
       );
       if (!mounted) {
-        FileUtils.deletePath(filePath);
+        await FileUtils.deletePath(filePath);
         return;
       }
       if (error != null) {
@@ -412,7 +412,7 @@ class _BackupAndSyncWebdavScreenState
         localPath: filePath,
       );
 
-      FileUtils.deletePath(filePath);
+      await FileUtils.deletePath(filePath);
       if (!mounted) {
         return;
       }
